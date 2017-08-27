@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>To do</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js" />
+</head>
+<body>
+	<div class="container">
+		<h1>To Do</h1>
+		<hr />
+		<div class="todo"></div>
+	</div>
+	<script type="text/template" id = "todo-list-template">
+	</script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
+	<script>
+
+		var TodoList = Backbone.View.extend({
+			el: '.todo',
+			render: function() {
+				var todos = new Todos();
+				var data = "aa";
+				var template = _.template($('#todo-list-template').html(), {data: data});
+				this.$el.html(template);						
+			}
+		});
+
+		var todoList = new TodoList();
+
+		var Router = Backbone.Router.extend ({
+			routes: {
+				'': 'home',
+			},		
+		}) ;
+
+		var Todos = Backbone.Model.extend({
+			url: '/todos',
+		  // Default todo attribute values
+		  	defaults: {
+		    	title: '',
+		        completed: false
+		  	},
+			initialize: function(){
+				console.log('This model has been initialized.');
+				this.on('change', function(){
+				console.log('- Values for this model have changed.');
+				});
+			},
+			  validate: function(attributes){
+			    if(attributes.title === undefined){
+			        return "Remember to set a title for your todo.";
+			    }
+	  		},
+		});
+
+		var router = new Router();
+		router.on('route:home', function() {
+			todoList.render();
+		});
+
+		Backbone.history.start();
+	</script>
+</body>
+</html>
